@@ -26,7 +26,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
-    private final UserDetailsService userDetailsService; // Fetch user data from authentication
+    private final UserDetailsService userDetailsService; // Fetch organization data from authentication
     private final JwtEntryPoint jwtEntryPoint;
 
     @Bean
@@ -43,7 +43,7 @@ public class SecurityConfig {
     }
 
     /*
-    * A provider that uses UserDetailsService to retrieve user details from
+    * A provider that uses UserDetailsService to retrieve organization details from
     * database and uses BCryptPasswordEncoder to verify password.
     * */
     @Bean

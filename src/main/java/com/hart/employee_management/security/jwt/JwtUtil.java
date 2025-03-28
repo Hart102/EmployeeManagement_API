@@ -19,7 +19,7 @@ public class JwtUtil {
     private String JWT_SECRET_KEY;
     private final Date JWT_EXPIRATION_TIME = new Date(System.currentTimeMillis() * 1000 * 60 * 60 * 10);
 
-    // Create Token with user email
+    // Create Token with organization email
     public String generateToken(String email) {
         return Jwts.builder()
                 .setSubject(email)

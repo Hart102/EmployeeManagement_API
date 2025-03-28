@@ -21,7 +21,7 @@ import java.io.IOException;
 * Extract jwt from incoming requests
 * Validate token
 * Extract username from token
-* Load user details from database
+* Load organization details from database
 * Set authentication in Spring Security Context
 * Return message if token is invalid or expired*/
 
