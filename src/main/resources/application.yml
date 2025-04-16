@@ -1,14 +1,18 @@
 #spring.application.name=employee_management
 
 server:
-  port: 9090
+  port: ${SERVER_PORT}
 
 spring:
+  config:
+    import: optional:file:.env[.properties]
+
+
   application:
     name: employee_management
   datasource:
-    url: jdbc:mysql://localhost:3306/employeeDb
-    username: root
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
@@ -18,35 +22,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: goodluckhart340@gmail.com
-    password: jkmw uqdj msbj wqce
-    properties:
-      mail:
-        smtp:
-          auth: true
-      starttls:
-        enable: true
 
 #JWT Config
 auth:
   token:
     expirationInMils: 3600000
-    jwtSecret: X7V08f8i3WF2rbit0VKrNR0IS41kCO7Vf+CgV8pIRMg=
-
-
-
-        #========= Jwt Config ==============
-        #====== 1Hr Expiration Time ========
-#        auth.token.expirationInMils=3600000
-#        auth.token.jwtSecret=X7V08f8i3WF2rbit0VKrNR0IS41kCO7Vf+CgV8pIRMg=
-#
-#        #============MAIL SENDER CONFIG============
-#        spring.mail.host=smtp.gmail.com
-#        spring.mail.port=587
-#        spring.mail.username=goodluckhart340@gmail.com
-#        spring.mail.password=slci rvsg bugm axem
-#        spring.mail.properties.mail.smtp.auth=true
-#        spring.mail.properties.mail.smtp.starttls.enable=true
+    jwtSecret: ${JWT_SECRET}
