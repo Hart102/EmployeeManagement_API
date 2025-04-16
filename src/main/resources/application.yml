@@ -4,6 +4,8 @@ server:
   port: 9090
 
 spring:
+  application:
+    name: employee_management
   datasource:
     url: jdbc:mysql://localhost:3306/employeeDb
     username: root
@@ -16,18 +18,18 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
-# Mail Config
-    mail:
-      host: smtp.gmail.com
-      port: 587
-      username: goodluckhart340@gmail.com
-      password: slci rvsg bugm axem
-      properties:
-        mail:
-          smtp:
-            auth: true
-            starttls:
-              enable: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: goodluckhart340@gmail.com
+    password: jkmw uqdj msbj wqce
+    properties:
+      mail:
+        smtp:
+          auth: true
+      starttls:
+        enable: true
+
 #JWT Config
 auth:
   token:
@@ -44,7 +46,7 @@ auth:
 #        #============MAIL SENDER CONFIG============
 #        spring.mail.host=smtp.gmail.com
 #        spring.mail.port=587
-#        spring.mail.username=${SPRING_MAIL_USERNAME}
-#        spring.mail.password=${SPRING_MAIL_PASSWORD}
+#        spring.mail.username=goodluckhart340@gmail.com
+#        spring.mail.password=slci rvsg bugm axem
 #        spring.mail.properties.mail.smtp.auth=true
 #        spring.mail.properties.mail.smtp.starttls.enable=true

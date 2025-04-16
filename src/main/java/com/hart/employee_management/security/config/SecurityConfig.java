@@ -1,5 +1,6 @@
 package com.hart.employee_management.security.config;
 
+import com.hart.employee_management.security.SecuredUrls;
 import com.hart.employee_management.security.jwt.JwtEntryPoint;
 import com.hart.employee_management.security.jwt.JwtRequestFilter;
 import io.swagger.v3.oas.models.Components;
@@ -58,14 +59,11 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(jwtEntryPoint))
-                .sessionManagement((session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth ->
-                        auth.requestMatchers(
-                                        "/v3/api-docs/**",
-                                        "/swagger-ui/**",
-                                        "/swagger-ui.html"
-                        ).permitAll()
-                                .anyRequest().authenticated()  // Make sure other API requests are secured
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/forgot-password/**").permitAll() // Ensure this is fully open
+                        .requestMatchers(SecuredUrls.SECURED_URLS).authenticated()
+                        .anyRequest().permitAll()
                 );
 
         http.authenticationProvider(daoAuthenticationProvider());
@@ -73,8 +71,10 @@ public class SecurityConfig {
         return http.build();
     }
 
+
     @Bean
     public OpenAPI customOpenAPI() {
+
         return new OpenAPI()
                 .components(
                         new Components()

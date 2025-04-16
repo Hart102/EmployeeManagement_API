@@ -15,7 +15,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
 
-    @GetMapping("/")
+    @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllEmployees () {
         try {
             var employees = employeeService.getAllEmployees();
@@ -49,7 +49,7 @@ public class EmployeeController {
     }
 
 
-    @PostMapping("/create/jobId/{jobId}")
+    @PostMapping("/create-employee/jobId/{jobId}")
     public ResponseEntity<ApiResponse> createEmployee (
             @RequestBody CreateEmployeeRequest request,
             @PathVariable Long jobId) {
@@ -62,17 +62,14 @@ public class EmployeeController {
         }
     }
 
-    @PutMapping("/update/employeeId/{employeeId}/newJobTitle/{newJobTitle}/oldJobTitle/{oldJobTitle}")
+    @PutMapping("/update/employeeId/{employeeId}/newJobId/{newJobId}")
     public ResponseEntity<ApiResponse> updateEmployee (
             @RequestBody UpdateEmployeeRequest request,
             @PathVariable Long employeeId,
-            @PathVariable String newJobTitle,
-            @PathVariable String oldJobTitle
+            @PathVariable Long newJobId
     ) {
         try {
-            var employee = employeeService.updateEmployee(
-                    request, employeeId, newJobTitle, oldJobTitle
-            );
+            var employee = employeeService.updateEmployee(request, employeeId, newJobId);
             return ResponseEntity.ok(new ApiResponse(false, "Employee record updated successfully", employee));
         } catch (Exception e) {
             return ResponseEntity.internalServerError()

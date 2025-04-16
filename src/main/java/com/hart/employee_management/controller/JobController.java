@@ -15,7 +15,7 @@ import java.util.List;
 public class JobController {
     private final JobService jobService;
 
-    @GetMapping("/")
+    @GetMapping("/all")
     public ResponseEntity<ApiResponse> getAllJobs() {
         try {
             List<Job> jobs = (List<Job>) jobService.getAllJobs();

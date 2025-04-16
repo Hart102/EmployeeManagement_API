@@ -1,5 +1,6 @@
 package com.hart.employee_management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hart.employee_management.enums.EmployeeStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -32,6 +33,11 @@ public class Employee {
     @Enumerated(EnumType.STRING)
     private EmployeeStatus employeeStatus;
 
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "organization_id")
+    private Organization organization;
+
     @ManyToMany
     @JoinTable(
             name = "employee_jobs",
@@ -41,11 +47,9 @@ public class Employee {
     private List<Job> jobs = new ArrayList<>();
 
     @OneToOne(mappedBy = "employee", cascade = CascadeType.ALL, orphanRemoval = true)
-    private EmployeeAddress address;
+    private Address address;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime dateOfJoining;
 }
-
-//    private Boolean isVerified;

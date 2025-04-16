@@ -22,7 +22,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write(
-                "{\"success\": false, \"message\": \"Access token is missing or invalid. Please login and try again.\"}"
+                "{\"isError\": true, \"message\": \"Access token is missing or invalid. Please login and try again.\"}"
         );
     }
 }

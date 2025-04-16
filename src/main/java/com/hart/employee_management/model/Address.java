@@ -1,5 +1,6 @@
 package com.hart.employee_management.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +12,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmployeeAddress {
+public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,7 +21,8 @@ public class EmployeeAddress {
     private String state;
     private String country;
 
+    @JsonIgnore
     @OneToOne
-    @JoinColumn(name = "EmployeeAddress_id", nullable = false)
+    @JoinColumn(name = "Address_id", nullable = false)
     private Employee employee;
 }

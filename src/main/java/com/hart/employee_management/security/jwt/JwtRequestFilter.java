@@ -56,7 +56,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         }
     }
 
-    private String extractTokenFromIncomingRequest(HttpServletRequest request) {
+    public static String extractTokenFromIncomingRequest(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
 
         if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
@@ -68,6 +68,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     private void handleJwtException (HttpServletResponse response, String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        response.getWriter().write("{\"success\": false, \"message\": \"" + message + "\"}");
+        response.getWriter().write("{\"isError\": true, \"message\": \"" + message + "\"}");
     }
 }

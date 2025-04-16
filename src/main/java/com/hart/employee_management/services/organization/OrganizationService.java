@@ -3,86 +3,73 @@ package com.hart.employee_management.services.organization;
 import com.hart.employee_management.exception.CustomException;
 import com.hart.employee_management.model.Organization;
 import com.hart.employee_management.repository.OrganizationRepository;
+import com.hart.employee_management.request.OrganizationRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
+import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
 public class OrganizationService implements IOrganizationService {
 
     private final OrganizationRepository organizationRepository;
-    private final PasswordEncoder passwordEncoder;
-    private static final SecureRandom RANDOM = new SecureRandom();
 
+    /*
+    * Get Authenticated Organization
+    * */
     @Override
-    public Organization findOrganizationByEmail(String email) {
-        return organizationRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException("Organization not found!"));
-    }
-
-    @Override
-    public Organization createOrganization(Organization org) {
-        organizationRepository.findByEmail(org.getEmail())
-                .orElseThrow(() -> new CustomException("Organization not found!"));
-
-        return organizationRepository.save(org);
-    }
-
-    @Override
-    public Organization updateOrganization(Organization request, Long org_id) {
-        var response = organizationRepository.findById(org_id)
-                .orElseThrow(() -> new CustomException("Organization not found!"));
-
-        Organization org = new Organization();
-        org.setName(request.getName());
-        org.setEmail(request.getEmail());
-        return organizationRepository.save(org);
+    public Optional<Organization> getOrganization() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        return Optional.ofNullable(organizationRepository.findByEmail(email))
+                .orElseThrow(() -> new CustomException("Organization not found !"));
     }
 
     /*
-    * Reset password:
-    * Verify Organization with their Id
-    * Check if old password match the existing password
-    * Hash and save new password
+    * Get Organization bg email
     * */
     @Override
-    public String resetPassword(String oldPassword, String newPassword, Long org_id) {
-        var organization = organizationRepository.findById(org_id)
-                .orElseThrow(() -> new CustomException("Organization not found!"));
-
-        if (!passwordEncoder.matches(oldPassword, organization.getPassword())) {
-            throw new CustomException("Incorrect password");
-        }
-        organization.setPassword(passwordEncoder.encode(newPassword));
-        organizationRepository.save(organization);
-        return "Password updated successfully";
+    public Optional<Organization> findOrganizationByEmail(String email) {
+        return Optional.ofNullable(organizationRepository.findByEmail(email)
+                .orElseThrow(() -> new CustomException("Organization not found!")));
     }
+
 
     /*
-    * Verify Organization exist using their mail
-    * Generate new password using their mail
-    * send the new mail to them through mail
-    * Has and save a copy of the password in the database
+    * Get the organization to update
+    * Check if the newly provided email is in use by another user
+    * If the new email is not in use, updated the record
     * */
     @Override
-    public String forgotPassword(String email) {
-        var organization = organizationRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException("Organization not found!"));
+    public Organization updateOrganization(OrganizationRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
-        int passwordLength = 6;
-        StringBuilder password = new StringBuilder();
+        Organization organization = organizationRepository
+                .findByEmail(email).orElseThrow(() -> new CustomException("Organization not found!"));
 
-        for (int i = 0; i < passwordLength; i++) {
-            password.append(organization.getEmail().charAt(RANDOM.nextInt(organization.getEmail().length())));
+        if (organizationRepository.existsByEmail(request.getEmail()) &&
+                !organization.getEmail().equals(request.getEmail()))
+        {
+            throw new CustomException("Email already exists");
         }
-        String newPassword = password.toString();
-
-        // Send new Password to user through mail
-        return "Password reset successful";
+        organization.setName(request.getName());
+        organization.setEmail(request.getEmail());
+        return organizationRepository.save(organization);
     }
 
 
+    @Override
+    public void deleteAccount() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String mail = authentication.getName();
+
+        Organization organization = organizationRepository
+                .findByEmail(mail).orElseThrow(() -> new CustomException("Organization not found!"));
+        organizationRepository.deleteById(organization.getId());
+    }
 }
