@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/jobs")
-@CrossOrigin(origins = "*", allowCredentials = "true")
+@CrossOrigin
 public class JobController {
     private final JobService jobService;
 

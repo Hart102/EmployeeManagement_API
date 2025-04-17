@@ -15,7 +15,7 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/organizations")
-@CrossOrigin(origins = "*", allowCredentials = "true")
+@CrossOrigin
 public class OrganizationController {
     private final OrganizationService organizationService;
 
