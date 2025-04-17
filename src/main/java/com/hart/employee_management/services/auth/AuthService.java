@@ -1,5 +1,6 @@
 package com.hart.employee_management.services.auth;
 
+import com.hart.employee_management.dto.LoginDto;
 import com.hart.employee_management.exception.CustomException;
 import com.hart.employee_management.model.Organization;
 import com.hart.employee_management.repository.OrganizationRepository;
@@ -8,9 +9,9 @@ import com.hart.employee_management.request.OrganizationRequest;
 import com.hart.employee_management.security.jwt.JwtUtil;
 import com.hart.employee_management.services.MailService;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -32,6 +33,8 @@ public class AuthService implements IAuthService {
     private final AuthenticationManager authenticationManager;
     private static final SecureRandom RANDOM = new SecureRandom();
     private final MailService mailService;
+
+    private final ModelMapper modelMapper;
 
 
     @Override
@@ -56,7 +59,7 @@ public class AuthService implements IAuthService {
     * Return user and access token
     * */
     @Override
-    public String login(LoginRequest request) {
+    public LoginDto login(LoginRequest request) {
         var org = organizationRepository
                 .findByEmail(request.getEmail()).orElseThrow(() -> new CustomException("User not found!"));
 
@@ -65,7 +68,12 @@ public class AuthService implements IAuthService {
         }
         authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(org.getEmail(), request.getPassword()));
-        return jwtUtil.generateToke(org.getEmail(), org.getId());
+
+        String token = jwtUtil.generateToke(org.getEmail(), org.getId());
+
+        LoginDto loginResponse = modelMapper.map(org, LoginDto.class);
+        loginResponse.setAccess_token(token);
+        return loginResponse;
     }
 
 
